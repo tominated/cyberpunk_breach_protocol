@@ -1,0 +1,17 @@
+opam-version: "2.0"
+version: "0.1"
+synopsis: "A solver for the breach protocol minigame in Cyberpunk 2077"
+authors: "Tom Brunoli <tom@tombrunoli.com>"
+license: "MIT"
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+]
+depends: [
+  "ocaml"
+  "ocaml-lsp-server"
+  "ocamlformat"
+  "dune"
+  "base"
+  "stdio"
+  "alcotest"
+]

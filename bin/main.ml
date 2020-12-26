@@ -1,5 +1,5 @@
 open Base
-open Lib.BreachProtocol
+open Lib
 
 let example_matrix =
   BreachMatrix.of_list
@@ -24,7 +24,8 @@ let () =
   Stdio.print_endline
     (String.concat ~sep:"\n" @@ List.map ~f:Daemon.to_string example_daemons) ;
   let best_path =
-    best_path ~matrix:example_matrix ~buffer_size ~daemons:example_daemons
+    BreachProtocol.best_path ~matrix:example_matrix ~buffer_size
+      ~daemons:example_daemons
   in
   Stdio.printf "\ngiven buffer of %d\n" buffer_size ;
   Option.iter best_path ~f:(fun {path; completed_daemons} ->

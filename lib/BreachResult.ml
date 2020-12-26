@@ -6,6 +6,7 @@ let score result =
   List.fold result.completed_daemons ~init:0 ~f:(fun acc d -> acc + d.score)
 
 let mk ~path ~daemons_progress =
+  let path = List.rev path in
   let completed_daemons =
     List.filter_map daemons_progress ~f:DaemonProgress.get_complete_daemon
   in

@@ -36,10 +36,10 @@ module BreachMatrix = struct
 end
 
 module Daemon = struct
-  type t = { name : string ; breach_sequence : string List.t }
+  type t = { name : string ; breach_sequence : string List.t ; score : int }
 
-  let to_string {name; breach_sequence} =
-    Printf.sprintf "%s %s" name (String.concat ~sep:" " breach_sequence)
+  let to_string {name; breach_sequence; score} =
+    Printf.sprintf "%s %s - score: %d" name (String.concat ~sep:" " breach_sequence) score
 end
 
 module DaemonProgress = struct
@@ -83,6 +83,10 @@ module DaemonProgress = struct
   let is_complete = function
     | Complete _ -> true
     | _ -> false
+  
+  let score = function
+    | Complete { daemon; _ } -> daemon.score
+    | _ -> 0
 end
 
 module Path = struct
@@ -112,24 +116,42 @@ module Path = struct
   let is_done = function
     | Root -> false
     | Path { daemons; _} -> List.for_all daemons ~f:(DaemonProgress.is_done)
+  
+  let any_complete = function
+    | Root -> false
+    | Path { daemons; _ } -> List.exists daemons ~f:(DaemonProgress.is_complete)
 
   let completed_daemons = function
     | Root -> []
     | Path { daemons; _ } -> List.filter_map daemons ~f:(function Complete {daemon} -> Some daemon | _ -> None)
+  
+  let score = function
+    | Root -> 0
+    | Path { daemons; _} -> List.fold daemons ~init:0 ~f:(fun acc d -> acc + DaemonProgress.score d)
+  
+  let rec length = function
+    | Root -> 0
+    | Path {parent; _} -> 1 + length parent
 
-  let is_complete = function
-    | Root -> false
-    | Path { daemons; _} -> List.for_all daemons ~f:(DaemonProgress.is_complete)
+  let compare a b =
+    let score_comparison = Int.compare (score b) (score a) in
+    if Int.equal score_comparison 0
+    then Int.compare (length a) (length b)
+    else score_comparison 
+
+  let to_valid_list path =
+    if any_complete path
+    then [path]
+    else [] 
 
   let top_level_path ~cell ~daemons =
     let daemons = List.map daemons ~f:DaemonProgress.of_daemon in
     Path { parent = Root; cell; daemons }
 end
 
-
 let rec work ~(matrix: BreachMatrix.t) ~(buffer_size: int) ~(step: int) ~(path: Path.t) ~(cell: BreachMatrix.cell) : Path.t List.t =
   (* If we have run out of buffer, return the path so far *)
-  if step >= buffer_size then [path] else
+  if step >= buffer_size then Path.to_valid_list path else
   
   let path = Path.step_daemons_progress ~value:cell.value ~path ~buffer_left:(buffer_size - step) in
   if Path.is_done path then [path] else
@@ -156,3 +178,6 @@ let expand_paths ~(matrix: BreachMatrix.t) ~(buffer_size: int) ~(daemons: Daemon
     let path = Path.top_level_path ~cell ~daemons in
     work ~matrix ~buffer_size ~step:0 ~path ~cell
   )
+
+let best_path paths =
+  List.hd @@ List.sort paths ~compare:Path.compare

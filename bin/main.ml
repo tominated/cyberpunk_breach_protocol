@@ -2,19 +2,22 @@ open Base
 open Lib.Breach_protocol
 
 let example_matrix = BreachMatrix.of_list [
-  ["E9" ; "BD" ; "55" ; "1C"] ;
-  ["E9" ; "1C" ; "BD" ; "BD"] ;
-  ["1C" ; "BD" ; "55" ; "E9"] ;
-  ["55" ; "E9" ; "1C" ; "BD"] ;
+  ["1C" ; "BD" ; "55" ; "E9" ; "55"] ;
+  ["1C" ; "BD" ; "1C" ; "55" ; "E9"] ;
+  ["55" ; "E9" ; "E9" ; "BD" ; "BD"] ;
+  ["55" ; "FF" ; "FF" ; "1C" ; "1C"] ;
+  ["FF" ; "E9" ; "1C" ; "BD" ; "FF"] ;
 ]
 
 let example_daemons: Daemon.t List.t = [
-  { name = "datamine_v1"; breach_sequence = ["1C" ; "55"] } ;
-  { name = "test"; breach_sequence = ["55"; "E9"]}
+  { name = "datamine_v2"; breach_sequence = ["1C" ; "1C" ; "55" ] } ;
+  { name = "datamine_v3"; breach_sequence = ["55" ; "FF" ; "1C" ] } ;
+  { name = "copy_malware"; breach_sequence = ["BD" ; "E9" ; "BD" ; "55"] } ;
+  { name = "crafting specs"; breach_sequence = ["55"; "1C" ; "FF" ; "BD"] }
 ]
 
 let () =
-  let buffer_size = 4 in
+  let buffer_size = 11 in
   Stdio.print_endline "Paths for matrix:";
   Stdio.print_endline (BreachMatrix.to_string example_matrix);
   Stdio.print_endline "For daemons:";

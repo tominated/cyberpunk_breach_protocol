@@ -6,21 +6,31 @@ I was inspired to try to build something similar in a more functional style. I
 decided to not reference the article's implementation at all, as I wanted to see
 if I could recall anything about dynamic programming from my university days.
 
-I decided that for my first attempt, I'll do it relatively naiively, and I'm
-pretty sure what I did is very much NOT dynamic programming, but it runs pretty
-damn quickly in WSL on my Ryzen 5800X machine (admittedly it's a brand new CPU).
+I decided to implement it relatively naiively, and I'm pretty sure what I did is
+very much NOT dynamic programming, but it runs pretty damn quickly in WSL on my
+Ryzen 5800X machine (admittedly it's a brand new CPU).
 
-I basically map out each possible path that a user could take through a matrix,
-and keep tally of how much progress is made on each daemon (the in-game name for
-a hack you will execute). If there's not enough buffer left (your in-game
-'cyberdeck' has a maximum sequence length - you can upgrade it as you progress),
-or if the path executes every daemon specified, the path is stopped early.
+Quick glossary:  
+Matrix - the square 2D array of values the user can pick (i've called these
+cells)  
+Path - a list of values in the order that they are picked in game  
+Daemon - the in-game name for a hack that a user can execute if they follow the
+correct path  
+Buffer - the in-game limit to the path length. This is upgradeable in-game by
+getting a new cyberdeck
 
-I then do a regular old list filter for any paths that have executed every
-daemon. It's certainly far from optimal, and probably allocates WAY more than
-necessary, but that's probably what I'll work on next.
+The current algorithm uses a lot of recursion - the possible paths form a tree
+that can be collapsed down once a path executes all the daemons, or runs out of
+buffer. The algorithm is supplied a matrix, buffer size, and a list of daemons,
+with scores attached for preferences. I recurse through all possible paths,
+potentially producing a 'result' value if there's any executed daemons for the
+path. These are folded so only the top scoring path remains.
 
-Here's an example of the output (as of commit 2bc351c)
+I think it's relatively efficient for a naiive algorithm - thanks to tail
+recursion it shouldn't use much memory, and I try not to allocate where easily
+avoidable.
+
+Here's an example of the output (as of commit bbee821)
 
 ```
 $ dune exec cyberpunk_breach_protocol
@@ -37,11 +47,12 @@ datamine_v3 55 FF 1C - score: 2
 copy_malware BD E9 BD 55 - score: 3
 crafting specs 55 1C FF BD - score: 4
 
-given buffer of 7
-num potential paths: 9169
-top path: (1, 0) BD, (1, 2) E9, (3, 2) BD, (3, 1) 55, (0, 1) 1C, (0, 4) FF, (3, 4) BD
+given buffer of 11
+top path: (2, 4) 1C, (0, 4) FF, (0, 2) 55, (3, 2) BD, (3, 0) E9, (1, 0) BD, (1, 3) FF, (3, 3) 1C, (3, 1) 55, (0, 1) 1C, (0, 0) 1C
 
 executes daemons:
+datamine_v2 1C 1C 55 - score: 1
+datamine_v3 55 FF 1C - score: 2
 copy_malware BD E9 BD 55 - score: 3
 crafting specs 55 1C FF BD - score: 4
 ```

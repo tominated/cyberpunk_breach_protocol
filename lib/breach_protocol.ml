@@ -10,18 +10,23 @@ module Coord = struct
   let to_string (x, y) = Printf.sprintf "(%d, %d)" x y
 end
 
-module BreachMatrix = struct
-  type cell = {coord: Coord.t; value: string}
+module Cell = struct
+  type t = {coord: Coord.t; value: string}
 
-  type t = cell Array.t Array.t
+  let to_string {coord; value} =
+    Printf.sprintf "%s %s" (Coord.to_string coord) value
+end
+
+module BreachMatrix = struct
+  type t = Cell.t Array.t Array.t
 
   let of_list (list : string List.t List.t) : t =
     Array.of_list
     @@ List.mapi list ~f:(fun y row ->
            Array.of_list
-           @@ List.mapi row ~f:(fun x value -> {coord= (x, y); value}) )
+           @@ List.mapi row ~f:(fun x value : Cell.t -> {coord= (x, y); value}) )
 
-  let to_string matrix =
+  let to_string (matrix : t) =
     Array.fold matrix ~init:"" ~f:(fun acc row ->
         let row_string =
           Array.fold row ~init:"" ~f:(fun acc cell ->
@@ -90,8 +95,7 @@ end
 module Path = struct
   type t =
     | Root
-    | Path of
-        {cell: BreachMatrix.cell; parent: t; daemons: DaemonProgress.t List.t}
+    | Path of {cell: Cell.t; parent: t; daemons: DaemonProgress.t List.t}
 
   let rec unvisited path coord =
     match path with
@@ -106,11 +110,9 @@ module Path = struct
     | Root ->
         ""
     | Path {parent= Root; cell; _} ->
-        Printf.sprintf "%s %s" (Coord.to_string cell.coord) cell.value
+        Cell.to_string cell
     | Path {parent; cell; _} ->
-        Printf.sprintf "%s, %s %s" (to_string parent)
-          (Coord.to_string cell.coord)
-          cell.value
+        Printf.sprintf "%s, %s" (to_string parent) (Cell.to_string cell)
 
   (* Step the progress of a daemon with the current value in the path *)
 
@@ -168,7 +170,7 @@ module Path = struct
 end
 
 let rec work ~(matrix : BreachMatrix.t) ~(buffer_size : int) ~(step : int)
-    ~(path : Path.t) ~(cell : BreachMatrix.cell) : Path.t List.t =
+    ~(path : Path.t) ~(cell : Cell.t) : Path.t List.t =
   (* If we have run out of buffer, return the path so far *)
   if step >= buffer_size then Path.to_valid_list path
   else

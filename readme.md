@@ -20,7 +20,7 @@ I then do a regular old list filter for any paths that have executed every
 daemon. It's certainly far from optimal, and probably allocates WAY more than
 necessary, but that's probably what I'll work on next.
 
-Here's an example of the output (as of commit c4aa242)
+Here's an example of the output (as of commit 2bc351c)
 
 ```
 $ dune exec cyberpunk_breach_protocol
@@ -32,18 +32,16 @@ Paths for matrix:
  FF E9 1C BD FF
 
 For daemons:
-datamine_v2 1C 1C 55
-datamine_v3 55 FF 1C
-copy_malware BD E9 BD 55
-crafting specs 55 1C FF BD
+datamine_v2 1C 1C 55 - score: 1
+datamine_v3 55 FF 1C - score: 2
+copy_malware BD E9 BD 55 - score: 3
+crafting specs 55 1C FF BD - score: 4
 
-given buffer of 11
-num paths: 909061
-num complete paths: 6
-((0, 0)) 1C, ((0, 1)) 1C, ((3, 1)) 55, ((3, 3)) 1C, ((1, 3)) FF, ((1, 0)) BD, ((3, 0)) E9, ((3, 2)) BD, ((0, 2)) 55, ((0, 4)) FF, ((2, 4)) 1C
-((0, 0)) 1C, ((0, 1)) 1C, ((3, 1)) 55, ((3, 3)) 1C, ((1, 3)) FF, ((1, 1)) BD, ((4, 1)) E9, ((4, 2)) BD, ((0, 2)) 55, ((0, 4)) FF, ((2, 4)) 1C
-((4, 0)) 55, ((4, 3)) 1C, ((1, 3)) FF, ((1, 0)) BD, ((3, 0)) E9, ((3, 2)) BD, ((0, 2)) 55, ((0, 4)) FF, ((2, 4)) 1C, ((2, 1)) 1C, ((3, 1)) 55
-((4, 0)) 55, ((4, 3)) 1C, ((1, 3)) FF, ((1, 1)) BD, ((4, 1)) E9, ((4, 2)) BD, ((0, 2)) 55, ((0, 4)) FF, ((2, 4)) 1C, ((2, 1)) 1C, ((3, 1)) 55
-((4, 0)) 55, ((4, 4)) FF, ((2, 4)) 1C, ((2, 1)) 1C, ((3, 1)) 55, ((3, 3)) 1C, ((1, 3)) FF, ((1, 0)) BD, ((3, 0)) E9, ((3, 2)) BD, ((0, 2)) 55
-((4, 0)) 55, ((4, 4)) FF, ((2, 4)) 1C, ((2, 1)) 1C, ((3, 1)) 55, ((3, 3)) 1C, ((1, 3)) FF, ((1, 1)) BD, ((4, 1)) E9, ((4, 2)) BD, ((0, 2)) 55
+given buffer of 7
+num potential paths: 9169
+top path: ((1, 0)) BD, ((1, 2)) E9, ((3, 2)) BD, ((3, 1)) 55, ((0, 1)) 1C, ((0, 4)) FF, ((3, 4)) BD
+
+executes daemons:
+copy_malware BD E9 BD 55 - score: 3
+crafting specs 55 1C FF BD - score: 4
 ```

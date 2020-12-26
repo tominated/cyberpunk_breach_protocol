@@ -102,8 +102,8 @@ module Path = struct
   
   let rec to_string = function
     | Root -> ""
-    | Path { parent = Root; cell; _ } -> Printf.sprintf "(%s) %s" (Coord.to_string cell.coord) cell.value
-    | Path { parent; cell; _ } -> Printf.sprintf "%s, (%s) %s" (to_string parent) (Coord.to_string cell.coord) cell.value
+    | Path { parent = Root; cell; _ } -> Printf.sprintf "%s %s" (Coord.to_string cell.coord) cell.value
+    | Path { parent; cell; _ } -> Printf.sprintf "%s, %s %s" (to_string parent) (Coord.to_string cell.coord) cell.value
 
   (* Step the progress of a daemon with the current value in the path *)
  

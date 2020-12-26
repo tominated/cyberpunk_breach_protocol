@@ -39,7 +39,7 @@ crafting specs 55 1C FF BD - score: 4
 
 given buffer of 7
 num potential paths: 9169
-top path: ((1, 0)) BD, ((1, 2)) E9, ((3, 2)) BD, ((3, 1)) 55, ((0, 1)) 1C, ((0, 4)) FF, ((3, 4)) BD
+top path: (1, 0) BD, (1, 2) E9, (3, 2) BD, (3, 1) 55, (0, 1) 1C, (0, 4) FF, (3, 4) BD
 
 executes daemons:
 copy_malware BD E9 BD 55 - score: 3

@@ -1,5 +1,5 @@
 open Base
-open Lib.Breach_protocol
+open Lib.BreachProtocol
 
 let example_matrix =
   BreachMatrix.of_list
@@ -17,24 +17,21 @@ let example_daemons : Daemon.t List.t =
   ]
 
 let () =
-  let buffer_size = 7 in
+  let buffer_size = 11 in
   Stdio.print_endline "Paths for matrix:" ;
   Stdio.print_endline (BreachMatrix.to_string example_matrix) ;
   Stdio.print_endline "For daemons:" ;
   Stdio.print_endline
     (String.concat ~sep:"\n" @@ List.map ~f:Daemon.to_string example_daemons) ;
-  let paths =
-    expand_paths ~matrix:example_matrix ~buffer_size ~daemons:example_daemons
+  let best_path =
+    best_path ~matrix:example_matrix ~buffer_size ~daemons:example_daemons
   in
-  let top_path = best_path paths in
   Stdio.printf "\ngiven buffer of %d\n" buffer_size ;
-  Stdio.printf "num potential paths: %d\n" (List.length paths) ;
-  Option.iter top_path ~f:(fun p ->
+  Option.iter best_path ~f:(fun {path; completed_daemons} ->
       let daemon_names =
-        Path.completed_daemons p
-        |> List.map ~f:Daemon.to_string
+        List.map completed_daemons ~f:Daemon.to_string
         |> String.concat ~sep:"\n"
       in
-      Stdio.printf "top path: %s\n\n" (Path.to_string p) ;
+      Stdio.printf "top path: %s\n\n" (Path.to_string path) ;
       Stdio.print_endline "executes daemons:" ;
       Stdio.print_endline daemon_names )

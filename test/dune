@@ -1,0 +1,8 @@
+(executable
+ (name run_tests)
+ (libraries alcotest lib))
+
+(rule
+ (alias runtest)
+ (action
+  (run ./run_tests.exe)))

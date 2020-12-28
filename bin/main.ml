@@ -17,7 +17,7 @@ let example_daemons : Daemon.t List.t =
   ]
 
 let () =
-  let buffer_size = 11 in
+  let buffer_size = 8 in
   Stdio.print_endline "Paths for matrix:" ;
   Stdio.print_endline (BreachMatrix.to_string example_matrix) ;
   Stdio.print_endline "For daemons:" ;

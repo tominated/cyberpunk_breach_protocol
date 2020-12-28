@@ -5,6 +5,13 @@ type t = {daemon: Daemon.t; sequence_left: string List.t}
 let of_daemon (daemon : Daemon.t) =
   {daemon; sequence_left= daemon.breach_sequence}
 
+let equal a b =
+  Daemon.equal a.daemon b.daemon
+  && List.equal String.equal a.sequence_left b.sequence_left
+
+let to_string {daemon; sequence_left} =
+  Printf.sprintf "%s: %s" daemon.name (String.concat ~sep:", " sequence_left)
+
 let step ~(value : string) ~(buffer_left : int) (progress : t) : t =
   match (progress.sequence_left, progress.daemon.breach_sequence) with
   (* Not enough room in the buffer to complete, just bail *)

@@ -14,4 +14,9 @@ depends: [
   "base"
   "stdio"
   "alcotest"
+  "js_of_ocaml-compiler"
+  "js_of_ocaml-ppx"
+  "js_of_ocaml"
+  "incr_dom"
+  "async_js"
 ]

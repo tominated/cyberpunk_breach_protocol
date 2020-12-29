@@ -1,6 +1,6 @@
 open Base
 
-type t = {coord: Coord.t; value: string}
+type t = {coord: Coord.t; value: string} [@@deriving sexp]
 
 let equal a b = Coord.equal a.coord b.coord && String.equal a.value b.value
 

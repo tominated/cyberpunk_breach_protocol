@@ -1,6 +1,6 @@
 open Base
 
-type t = Cell.t List.t
+type t = Cell.t List.t [@@deriving sexp]
 
 let equal = List.equal Cell.equal
 

@@ -1,3 +1,5 @@
 (library
-  (name lib)
-  (libraries base stdio alcotest))
+ (name lib)
+ (libraries base stdio alcotest)
+ (preprocess
+  (pps js_of_ocaml-ppx ppx_jane)))

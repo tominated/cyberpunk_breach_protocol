@@ -1,6 +1,6 @@
 open Base
 
-type t = {path: Path.t; completed_daemons: Daemon.t List.t}
+type t = {path: Path.t; completed_daemons: Daemon.t List.t} [@@deriving sexp]
 
 let score result =
   List.fold result.completed_daemons ~init:0 ~f:(fun acc d -> acc + d.score)

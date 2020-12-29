@@ -1,6 +1,15 @@
 (executable
  (name main)
  (modes js)
- (libraries core_kernel incr_dom lib)
+ (modules main)
+ (libraries core_kernel incr_dom web_lib)
+ (preprocess
+  (pps js_of_ocaml-ppx ppx_jane)))
+
+(executable
+ (name worker)
+ (modes js)
+ (modules worker)
+ (libraries js_of_ocaml web_lib)
  (preprocess
   (pps js_of_ocaml-ppx ppx_jane)))
